@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class MainOfSecondTask {
     public static void main(String[] args) throws IOException {
         //reading date
         Map<String,Integer> products = new HashMap<>();
