@@ -1,0 +1,78 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        //reading date
+        Map<String,Integer> products = new HashMap<>();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(new File("Date/transactions.csv")));
+        PrintWriter printWriter = new PrintWriter(new File("ConsumerAbility.csv"));
+        PrintWriter printWriter1 = new PrintWriter(new File("PROD_CODE has max Ability.csv"));
+        PrintWriter printWriter2 = new PrintWriter(new File("GroupProduct with big Ability.csv"));
+        String s = bufferedReader.readLine();
+        s = bufferedReader.readLine();
+        while (s != null){
+            String [] strings = s.split(";");
+            if(products.containsKey(strings[0])){
+                products.put(strings[0], products.get(strings[0]) + 1);
+            }
+            else {
+                products.put(strings[0],1);
+            }
+            s = bufferedReader.readLine();
+        }
+        bufferedReader.close();
+        Set<String> keys = products.keySet();
+        //write prod_code -ConsumerAbility
+        printWriter.println("PROD_CODE;CONSUMER_ABILITY");
+        for(String s1 : keys) {
+            printWriter.println(s1 + ";" +products.get(s1));
+            printWriter.flush();
+        }
+        printWriter.close();
+
+        Set <String> max = new HashSet<>();
+        int m = 0;
+        for (String s1 : keys) {
+            if (m == products.get(s1)) {
+                max.add(s1);
+            }
+            if(m < products.get(s1)) {
+                max = new HashSet<>();
+                max.add(s1);
+                m = products.get(s1);
+            }
+        }
+        printWriter1.println("PROD_CODE;CONSUMER_ABILITY");
+        for(String s1 : max) {
+            printWriter1.println(s1 + ";" +products.get(s1));
+            printWriter1.flush();
+        }
+        printWriter1.close();
+
+        List<Integer> list = new ArrayList<>();
+        for(String s1 : keys) {
+            list.add(products.get(s1));
+        }
+
+        Collections.sort(list);
+        int firstFromMax = 0;
+        long raz = 0;
+        for (int i = 0; i < list.size()-1; i++) {
+            if(list.get(i + 1) - list.get(i) > raz) {
+                raz = list.get(i + 1) - list.get(i);
+                firstFromMax = list.get(i + 1);
+            }
+        }
+        System.out.println(raz);
+
+        printWriter2.println("PROD_CODE;CONSUMER_ABILITY");
+        for(String s1 : keys) {
+            if(products.get(s1) >= firstFromMax) {
+                printWriter2.println(s1 + ";" + products.get(s1));
+            }
+        }
+        printWriter2.close();
+
+    }
+}
